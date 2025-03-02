@@ -74,7 +74,39 @@ button {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
-button {
+.ant-input,
+.ant-input:focus-within,
+.ant-input:focus,
+.ant-input-affix-wrapper,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  box-shadow: none !important;
+}
+
+.ant-input-affix-wrapper {
+  padding: 0 11px !important;
+  border: 1px solid #f0f0f0 !important;
+  border-radius: 8px !important;
+}
+
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper-focused {
+  border-color: #396cd8 !important;
+}
+
+.ant-input-affix-wrapper .ant-input {
+  border: none !important;
+}
+
+.calendar-icon {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.calendar-icon:hover {
+  color: #396cd8;
+}
   cursor: pointer;
 }
 
