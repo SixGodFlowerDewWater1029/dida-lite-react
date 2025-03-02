@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input } from "antd";
-import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, FieldTimeOutlined, CheckSquareOutlined } from "@ant-design/icons";
+import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined } from "@ant-design/icons";
 import "./assets/styles/App.css";
 import "./assets/styles/MainNav.css";
 
@@ -17,11 +17,11 @@ const App: React.FC = () => {
           mode="inline"
           defaultSelectedKeys={["1"]}
           items={[
-            { key: "1", icon: <AppstoreOutlined />, title: "任务" },
+            { key: "1", icon: <CheckSquareOutlined />, title: "任务" },
             { key: "2", icon: <CalendarOutlined />, title: "日历" },
-            { key: "3", icon: <FieldTimeOutlined />, title: "四象限" },
+            { key: "3", icon: <AppstoreOutlined />, title: "四象限" },
             { key: "4", icon: <ClockCircleOutlined />, title: "番茄专注" },
-            { key: "5", icon: <CheckSquareOutlined />, title: "习惯打卡" }
+            { key: "5", icon: <EnvironmentOutlined />, title: "习惯打卡" }
           ]}
           className="main-nav"
         />
