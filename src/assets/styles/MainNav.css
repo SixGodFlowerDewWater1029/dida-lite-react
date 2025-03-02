@@ -1,0 +1,49 @@
+.main-nav {
+  text-align: center;
+}
+
+.main-nav .ant-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  padding: 0 !important;
+  margin: 4px 0;
+}
+
+.main-nav .ant-menu-item .anticon {
+  font-size: 20px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 隐藏 ant-menu-title-content 以确保图标完全居中 */
+.main-nav .ant-menu-item .ant-menu-title-content {
+  display: none;
+}
+
+.main-nav .ant-menu-item::after {
+  content: attr(title);
+  font-size: 12px;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease 0.5s, height 0.3s ease 0.5s;
+  margin-top: 0;
+}
+
+.main-nav .ant-menu-item:hover::after {
+  opacity: 1;
+  height: 16px;
+  margin-top: 4px;
+}
+
+/* 保持选中项的标题可见 */
+.main-nav .ant-menu-item-selected::after {
+  opacity: 1;
+  height: 16px;
+  margin-top: 4px;
+}
