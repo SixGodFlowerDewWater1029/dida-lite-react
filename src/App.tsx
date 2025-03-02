@@ -62,7 +62,7 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (selectedNav === "2") {
       return (
-        <div style={{ padding: "20px" }}>
+        <div style={{ padding: "20px", height: "100%", overflow: "auto" }}>
           <Calendar 
             fullscreen={true} 
             style={{ 
@@ -77,7 +77,7 @@ const App: React.FC = () => {
     }
 
     return (
-      <Content style={{ padding: "20px", backgroundColor: "#fff" }}>
+      <Content style={{ padding: "20px", backgroundColor: "#fff", height: "100%", overflow: "auto" }}>
         <div style={{ marginBottom: "20px" }}>
           <Title level={3} style={{ margin: 0 }}>{selectedMenuTitle}</Title>
         </div>
@@ -141,6 +141,7 @@ const App: React.FC = () => {
           ]}
           className="main-nav"
           onClick={({ key }) => setSelectedNav(key)}
+          style={{ height: "100%", borderRight: 0 }}
         />
       </Sider>
       <Layout>
@@ -165,10 +166,13 @@ const App: React.FC = () => {
                 const selectedItem = menuItems.find(i => i.key === key);
                 setSelectedMenuTitle(selectedItem?.label || "今天");
               }}
+              style={{ height: "100%", borderRight: 0 }}
             />
           </Sider>
         )}
-        {renderContent()}
+        <Layout style={{ height: "100%" }}>
+          {renderContent()}
+        </Layout>
       </Layout>
     </Layout>
   );
