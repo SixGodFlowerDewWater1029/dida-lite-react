@@ -14,7 +14,9 @@
       {
         "title": "dida-lite-react",
         "width": 1260,
-        "height": 870
+        "height": 870,
+        "minWidth": 985,
+        "minHeight": 700
       }
     ],
     "security": {
