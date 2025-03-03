@@ -7,6 +7,15 @@ import "./assets/styles/MainNav.css";
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
+interface Todo {
+  id: string;
+  content: string;
+  date: Date | null;
+  time: any;
+  reminder: boolean;
+  repeat: boolean;
+}
+
 const App: React.FC = () => {
   const [selectedMenuTitle, setSelectedMenuTitle] = React.useState("今天");
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
@@ -15,6 +24,54 @@ const App: React.FC = () => {
   const [repeat, setRepeat] = React.useState(false);
   const [popoverVisible, setPopoverVisible] = React.useState(false);
   const [selectedNav, setSelectedNav] = React.useState("1");
+  const [inputValue, setInputValue] = React.useState("");
+  const [todos, setTodos] = React.useState<Todo[]>([]);
+
+  const addTodo = () => {
+    if (!inputValue.trim()) return;
+
+    const newTodo: Todo = {
+      id: Date.now().toString(),
+      content: inputValue.trim(),
+      date: selectedDate || new Date(),
+      time: selectedTime,
+      reminder,
+      repeat
+    };
+
+    setTodos(prev => [...prev, newTodo]);
+    setInputValue("");
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setReminder(false);
+    setRepeat(false);
+    setPopoverVisible(false);
+  };
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+  };
+
+  const isWithinNext7Days = (date: Date) => {
+    const today = new Date();
+    const next7Days = new Date(today);
+    next7Days.setDate(today.getDate() + 7);
+    return date > today && date <= next7Days;
+  };
+
+  const getTodosByDate = () => {
+    if (selectedMenuTitle === "今天") {
+      return todos.filter(todo => !todo.date || isToday(todo.date));
+    } else if (selectedMenuTitle === "最近7天") {
+      return todos.filter(todo => todo.date && isWithinNext7Days(todo.date));
+    } else if (selectedMenuTitle === "收集箱") {
+      return todos;
+    }
+    return [];
+  };
 
   const datePickerContent = (
     <div style={{ width: 300 }}>
@@ -53,6 +110,7 @@ const App: React.FC = () => {
           }}>清除</Button>
           <Button type="primary" onClick={() => {
             setPopoverVisible(false);
+            addTodo();
           }}>确定</Button>
         </div>
       </div>
@@ -85,6 +143,9 @@ const App: React.FC = () => {
           <div style={{ flex: 1 }}>
             <Input 
               placeholder="添加待办事项" 
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onPressEnter={addTodo}
               style={{ marginBottom: "20px", height: '32px' }} 
               suffix={
                 <Popover 
@@ -104,9 +165,12 @@ const App: React.FC = () => {
             <div style={{ marginBottom: "20px" }}>
               <Title level={4}>今日待办</Title>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <Checkbox>完成界面设计</Checkbox>
-                <Checkbox>开发任务模块</Checkbox>
-                <Checkbox>测试功能</Checkbox>
+                {getTodosByDate().map(todo => (
+                  <div key={todo.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Checkbox>{todo.content}</Checkbox>
+                    {todo.time && <span style={{ fontSize: "12px", color: "#666" }}>{todo.time.format("HH:mm")}</span>}
+                  </div>
+                ))}
               </div>
             </div>
             <div>
