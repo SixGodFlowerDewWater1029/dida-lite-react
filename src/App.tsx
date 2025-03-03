@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input, Popover, TimePicker, Button, Switch, Dropdown } from "antd";
-import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined, SettingOutlined, LineChartOutlined, LogoutOutlined } from "@ant-design/icons";
+import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined, SettingOutlined, LineChartOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import "./assets/styles/App.css";
 import "./assets/styles/MainNav.css";
 
@@ -26,6 +26,7 @@ const App: React.FC = () => {
   const [selectedNav, setSelectedNav] = React.useState("1");
   const [inputValue, setInputValue] = React.useState("");
   const [todos, setTodos] = React.useState<Todo[]>([]);
+  const [menuCollapsed, setMenuCollapsed] = React.useState(false);
 
   const addTodo = () => {
     if (!inputValue.trim()) return;
@@ -137,7 +138,15 @@ const App: React.FC = () => {
 
     return (
       <Content style={{ padding: "20px", backgroundColor: "#fff", height: "100%", overflow: "auto" }}>
-        <div style={{ marginBottom: "20px" }}>
+        <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
+          {selectedNav === "1" && (
+            <Button 
+              type="text" 
+              icon={menuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setMenuCollapsed(!menuCollapsed)}
+              style={{ padding: 0 }}
+            />
+          )}
           <Title level={3} style={{ margin: 0 }}>{selectedMenuTitle}</Title>
         </div>
         <div style={{ display: "flex", gap: "20px" }}>
@@ -242,7 +251,7 @@ const App: React.FC = () => {
       </Sider>
       <Layout>
         {selectedNav === "1" && (
-          <Sider theme="light" width={240} style={{ borderRight: "1px solid #f0f0f0" }}>
+          <Sider theme="light" width={menuCollapsed ? 0 : 240} style={{ borderRight: "1px solid #f0f0f0" }}>
             <Menu
               mode="inline"
               defaultSelectedKeys={["1"]}
