@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input, Popover, TimePicker, Button, Switch, Dropdown, Modal } from "antd";
 import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined, SettingOutlined, LineChartOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Editor } from '@bytemd/react';
@@ -6,6 +6,8 @@ import gfm from '@bytemd/plugin-gfm';
 import 'bytemd/dist/index.css';
 import "./assets/styles/App.css";
 import "./assets/styles/MainNav.css";
+import { StorageService } from './services/storage';
+import dayjs from 'dayjs';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -35,6 +37,23 @@ const App: React.FC = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedTodo, setSelectedTodo] = React.useState<Todo | null>(null);
   const [clickPosition, setClickPosition] = React.useState<{ x: number; y: number } | null>(null);
+
+  // 初始化StorageService并从本地存储加载待办事项
+  useEffect(() => {
+    const initStorage = async () => {
+      await StorageService.init();
+      const savedTodos = await StorageService.loadTodos();
+      setTodos(savedTodos);
+    };
+    initStorage();
+  }, []);
+
+  // 当待办事项变更时保存到本地存储
+  useEffect(() => {
+    if (todos.length > 0) {
+      StorageService.saveTodos(todos);
+    }
+  }, [todos]);
 
   const addTodo = () => {
     if (!inputValue.trim()) return;
