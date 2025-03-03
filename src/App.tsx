@@ -325,7 +325,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: "98vh" }}>
       <Sider theme="light" width={80} style={{ borderRight: "1px solid #f0f0f0" }}>
         <Menu
           mode="inline"
