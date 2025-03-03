@@ -49,6 +49,7 @@ const App: React.FC = () => {
   };
 
   const isToday = (date: Date) => {
+    if (!date) return false;
     const today = new Date();
     return date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
@@ -166,9 +167,28 @@ const App: React.FC = () => {
               <Title level={4}>今日待办</Title>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {getTodosByDate().map(todo => (
-                  <div key={todo.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Checkbox>{todo.content}</Checkbox>
-                    {todo.time && <span style={{ fontSize: "12px", color: "#666" }}>{todo.time.format("HH:mm")}</span>}
+                  <div key={todo.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px", borderRadius: "4px", backgroundColor: "#f9f9f9", marginBottom: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
+                      <Checkbox>{todo.content}</Checkbox>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "12px", color: "#666" }}>
+                      {todo.date && (
+                        <span>
+                          {todo.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                        </span>
+                      )}
+                      {todo.time && <span>{todo.time.format("HH:mm")}</span>}
+                      {todo.reminder && (
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          <BellOutlined style={{ fontSize: "14px" }} />
+                        </span>
+                      )}
+                      {todo.repeat && (
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          <RedoOutlined style={{ fontSize: "14px" }} />
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
