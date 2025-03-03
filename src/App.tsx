@@ -276,6 +276,7 @@ const App: React.FC = () => {
           mask={false}
           closable={false}
           animation={false}
+          transitionName=""
           style={{
             position: 'fixed',
             left: clickPosition?.x,
