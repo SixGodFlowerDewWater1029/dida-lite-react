@@ -1,6 +1,6 @@
 import React from "react";
-import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input, Popover, TimePicker, Button, Switch } from "antd";
-import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined } from "@ant-design/icons";
+import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input, Popover, TimePicker, Button, Switch, Dropdown } from "antd";
+import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined, SettingOutlined, LineChartOutlined, LogoutOutlined } from "@ant-design/icons";
 import "./assets/styles/App.css";
 import "./assets/styles/MainNav.css";
 
@@ -217,6 +217,13 @@ const App: React.FC = () => {
           mode="inline"
           selectedKeys={[selectedNav]}
           items={[
+            { key: "0", icon: <Dropdown menu={{ items: [
+              { key: 'setting', label: '设置', icon: <SettingOutlined /> },
+              { key: 'stats', label: '统计', icon: <LineChartOutlined /> },
+              { key: 'logout', label: '退出登录', icon: <LogoutOutlined /> }
+            ]}} trigger={['click']}>
+              <Avatar size={24} style={{ backgroundColor: '#396cd8', cursor: 'pointer' }}>U</Avatar>
+            </Dropdown>, title: "用户" },
             { key: "1", icon: <CheckSquareOutlined />, title: "任务" },
             { key: "2", icon: <CalendarOutlined />, title: "日历" },
             { key: "3", icon: <AppstoreOutlined />, title: "四象限" },
@@ -224,7 +231,12 @@ const App: React.FC = () => {
             { key: "5", icon: <EnvironmentOutlined />, title: "习惯打卡" }
           ]}
           className="main-nav"
-          onClick={({ key }) => setSelectedNav(key)}
+          onClick={({ key }) => {
+            // 只有当点击的不是头像按钮（key不等于"0"）时，才更新selectedNav
+            if (key !== "0") {
+              setSelectedNav(key);
+            }
+          }}
           style={{ height: "100%", borderRight: 0 }}
         />
       </Sider>
