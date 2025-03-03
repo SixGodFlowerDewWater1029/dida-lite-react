@@ -237,15 +237,13 @@ const App: React.FC = () => {
               items={[
                 { key: "1", label: "今天" },
                 { key: "2", label: "最近7天" },
-                { key: "3", label: "收集箱" },
-                { key: "4", label: "幼儿园" }
+                { key: "3", label: "收集箱" }
               ]}
               onClick={({ key, item }) => {
                 const menuItems = [
                   { key: "1", label: "今天" },
                   { key: "2", label: "最近7天" },
-                  { key: "3", label: "收集箱" },
-                  { key: "4", label: "幼儿园" }
+                  { key: "3", label: "收集箱" }
                 ];
                 const selectedItem = menuItems.find(i => i.key === key);
                 setSelectedMenuTitle(selectedItem?.label || "今天");
