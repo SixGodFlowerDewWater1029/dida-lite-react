@@ -1,6 +1,9 @@
 import React from "react";
-import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input, Popover, TimePicker, Button, Switch, Dropdown } from "antd";
+import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input, Popover, TimePicker, Button, Switch, Dropdown, Modal } from "antd";
 import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined, SettingOutlined, LineChartOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Editor } from '@bytemd/react';
+import gfm from '@bytemd/plugin-gfm';
+import 'bytemd/dist/index.css';
 import "./assets/styles/App.css";
 import "./assets/styles/MainNav.css";
 
@@ -16,6 +19,8 @@ interface Todo {
   repeat: boolean;
 }
 
+const plugins = [gfm()];
+
 const App: React.FC = () => {
   const [selectedMenuTitle, setSelectedMenuTitle] = React.useState("今天");
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
@@ -27,6 +32,9 @@ const App: React.FC = () => {
   const [inputValue, setInputValue] = React.useState("");
   const [todos, setTodos] = React.useState<Todo[]>([]);
   const [menuCollapsed, setMenuCollapsed] = React.useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [selectedTodo, setSelectedTodo] = React.useState<Todo | null>(null);
+  const [clickPosition, setClickPosition] = React.useState<{ x: number; y: number } | null>(null);
 
   const addTodo = () => {
     if (!inputValue.trim()) return;
@@ -119,6 +127,22 @@ const App: React.FC = () => {
     </div>
   );
 
+  const [editingTodoContent, setEditingTodoContent] = React.useState("");
+
+  const handleTodoContentEdit = (todo: Todo, newContent: string) => {
+    if (!newContent.trim()) return;
+    setTodos(prev => prev.map(item => 
+      item.id === todo.id ? { ...item, content: newContent.trim() } : item
+    ));
+  };
+
+  const handleTodoClick = (todo: Todo, event: React.MouseEvent) => {
+    setClickPosition({ x: event.clientX, y: event.clientY });
+    setSelectedTodo(todo);
+    setEditingTodoContent(todo.content);
+    setModalVisible(true);
+  };
+
   const renderContent = () => {
     if (selectedNav === "2") {
       return (
@@ -176,14 +200,31 @@ const App: React.FC = () => {
               <Title level={4}>今日待办</Title>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {getTodosByDate().map(todo => (
-                  <div key={todo.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px", borderRadius: "4px", backgroundColor: "#f9f9f9", marginBottom: "4px" }}>
+                  <div 
+                    key={todo.id} 
+                    data-todo-id={todo.id}
+                    style={{ 
+                      display: "flex", 
+                      alignItems: "center", 
+                      gap: "8px", 
+                      padding: "8px", 
+                      borderRadius: "4px", 
+                      backgroundColor: "#f9f9f9", 
+                      marginBottom: "4px",
+                      cursor: "pointer",
+                      position: "relative"
+                    }}
+                    onClick={(e) => handleTodoClick(todo, e)}
+                  >
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
-                      <Checkbox>{todo.content}</Checkbox>
+                      <Checkbox 
+                        onClick={(e) => e.stopPropagation()}
+                      >{todo.content}</Checkbox>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "12px", color: "#666" }}>
                       {todo.date && (
                         <span>
-                          {todo.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                          {isToday(todo.date) ? "今天" : todo.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
                         </span>
                       )}
                       {todo.time && <span>{todo.time.format("HH:mm")}</span>}
@@ -215,6 +256,69 @@ const App: React.FC = () => {
             <Calendar fullscreen={false} style={{ border: "1px solid #f0f0f0", borderRadius: 8 }} />
           </div>
         </div>
+        
+        <Modal
+          title={selectedTodo ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ fontSize: "14px", color: "#666" }}>
+                {selectedTodo.date?.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                {selectedTodo.time && ` ${selectedTodo.time.format("HH:mm")}`}
+              </span>
+            </div>
+          ) : null}
+          open={modalVisible}
+          onCancel={() => {
+            setModalVisible(false);
+            setClickPosition(null);
+          }}
+          footer={null}
+          width={400}
+          mask={false}
+          closable={false}
+          animation={false}
+          style={{
+            position: 'fixed',
+            left: clickPosition?.x,
+            top: clickPosition?.y,
+            margin: 0
+          }}
+          getContainer={() => document.body}
+        >
+          <div style={{ padding: "16px 0" }}>
+            {selectedTodo && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ fontSize: "16px" }}>
+                  <Editor
+                    value={editingTodoContent}
+                    plugins={plugins}
+                    onChange={(v) => {
+                      setEditingTodoContent(v);
+                      if (selectedTodo) {
+                        handleTodoContentEdit(selectedTodo, v);
+                        setSelectedTodo(prev => prev ? { ...prev, content: v.trim() } : null);
+                      }
+                    }}
+                    style={{ height: '200px' }}
+                  />
+                </div>
+                <div style={{ display: "flex", gap: "16px", color: "#666" }}>
+                  {selectedTodo.reminder && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      <BellOutlined />
+                      <span>提醒</span>
+                    </div>
+                  )}
+                  {selectedTodo.repeat && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      <RedoOutlined />
+                      <span>重复</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </Modal>
       </Content>
     );
   };
