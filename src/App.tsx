@@ -7,9 +7,8 @@ import 'bytemd/dist/index.css';
 import "./assets/styles/App.css";
 import "./assets/styles/MainNav.css";
 import { StorageService } from './services/storage';
-import dayjs from 'dayjs';
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 const { Title } = Typography;
 
 interface Todo {
@@ -318,7 +317,6 @@ const App: React.FC = () => {
                         setSelectedTodo(prev => prev ? { ...prev, content: v.trim() } : null);
                       }
                     }}
-                    style={{ height: '200px' }}
                   />
                 </div>
                 <div style={{ display: "flex", gap: "16px", color: "#666" }}>
@@ -384,7 +382,7 @@ const App: React.FC = () => {
                 { key: "2", label: "最近7天" },
                 { key: "3", label: "收集箱" }
               ]}
-              onClick={({ key, item }) => {
+              onClick={({ key }) => {
                 const menuItems = [
                   { key: "1", label: "今天" },
                   { key: "2", label: "最近7天" },
