@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Layout, Menu, Calendar, Checkbox, Avatar, Typography, Input, Popover, TimePicker, Button, Switch, Dropdown, Modal } from "antd";
-import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined, SettingOutlined, LineChartOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { CalendarOutlined, ClockCircleOutlined, AppstoreOutlined, EnvironmentOutlined, CheckSquareOutlined, BellOutlined, RedoOutlined, SettingOutlined, LineChartOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Editor } from '@bytemd/react';
 import gfm from '@bytemd/plugin-gfm';
 import 'bytemd/dist/index.css';
@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedTodo, setSelectedTodo] = React.useState<Todo | null>(null);
   const [clickPosition, setClickPosition] = React.useState<{ x: number; y: number } | null>(null);
+  const [contextMenuPosition, setContextMenuPosition] = React.useState<{ x: number; y: number } | null>(null);
 
   // 初始化StorageService并从本地存储加载待办事项
   useEffect(() => {
@@ -88,7 +89,7 @@ const App: React.FC = () => {
     const activeTodos = todos.filter(todo => !todo.deleted);
     const completedTodos = todos.filter(todo => todo.completed && !todo.deleted);
     const deletedTodos = todos.filter(todo => todo.deleted);
-
+  
     if (selectedMenuTitle === "今天") {
       return activeTodos.filter(todo => !todo.completed && (!todo.date || isToday(todo.date)));
     } else if (selectedMenuTitle === "最近7天") {
@@ -157,10 +158,16 @@ const App: React.FC = () => {
   };
 
   const handleTodoClick = (todo: Todo, event: React.MouseEvent) => {
-    setClickPosition({ x: event.clientX, y: event.clientY });
-    setSelectedTodo(todo);
-    setEditingTodoContent(todo.content);
-    setModalVisible(true);
+    if (event.type === 'click') {
+      setClickPosition({ x: event.clientX, y: event.clientY });
+      setSelectedTodo(todo);
+      setEditingTodoContent(todo.content);
+      setModalVisible(true);
+    }
+  };
+
+  const handleTodoContextMenu = (todo: Todo, event: React.MouseEvent) => {
+    event.preventDefault();
   };
 
   const renderContent = () => {
@@ -235,18 +242,32 @@ const App: React.FC = () => {
                       position: "relative"
                     }}
                     onClick={(e) => handleTodoClick(todo, e)}
+                    onContextMenu={(e) => handleTodoContextMenu(todo, e)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
-                      <Checkbox 
-                        checked={todo.completed}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => {
-                          setTodos(prev => prev.map(item => 
-                            item.id === todo.id ? { ...item, completed: e.target.checked } : item
+                    <Dropdown menu={{ items: [
+                      {
+                        key: 'delete',
+                        label: '删除',
+                        icon: <DeleteOutlined />,
+                        onClick: () => {
+                          setTodos(prev => prev.map(item =>
+                            item.id === todo.id ? { ...item, deleted: true } : item
                           ));
-                        }}
-                      >{todo.content}</Checkbox>
-                    </div>
+                        }
+                      }
+                    ]}} trigger={['contextMenu']}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
+                        <Checkbox 
+                          checked={todo.completed}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => {
+                            setTodos(prev => prev.map(item => 
+                              item.id === todo.id ? { ...item, completed: e.target.checked } : item
+                            ));
+                          }}
+                        >{todo.content}</Checkbox>
+                      </div>
+                    </Dropdown>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "12px", color: "#666" }}>
                       {todo.date && (
                         <span>
