@@ -16,11 +16,6 @@ type SerializedTodo = Omit<Todo, 'date' | 'time'> & {
   time: string | null;
 };
 
-type SerializedStorageData = {
-  version: string;
-  todos: SerializedTodo[];
-};
-
 export const StorageService = {
   init: async () => {
     await initStore();
@@ -49,15 +44,15 @@ export const StorageService = {
   loadTodos: async (): Promise<Todo[]> => {
     try {
       // Get individual properties instead of the whole object
-      const version = await store.get<string>(`${STORAGE_KEY}.version`);
-      const serializedTodos = await store.get<SerializedTodo[]>(`${STORAGE_KEY}.todos`) || [];
+      const version = await store.get(`${STORAGE_KEY}.version`) as string;
+      const serializedTodos = (await store.get(`${STORAGE_KEY}.todos`)) as SerializedTodo[] || [];
 
       // 数据版本检查和迁移逻辑可以在这里添加
       if (version !== VERSION) {
         console.warn('数据版本不匹配，可能需要迁移');
       }
 
-      return serializedTodos.map(todo => ({
+      return serializedTodos.map((todo: SerializedTodo) => ({
         ...todo,
         date: todo.date ? new Date(todo.date) : null,
         time: todo.time ? dayjs(todo.time, 'HH:mm') : null
