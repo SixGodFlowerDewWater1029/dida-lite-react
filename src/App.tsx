@@ -7,18 +7,9 @@ import 'bytemd/dist/index.css';
 import "./assets/styles/App.css";
 import "./assets/styles/MainNav.css";
 import { StorageService } from './services/storage';
-
+import { Todo } from './types/todo';
 const { Sider, Content } = Layout;
 const { Title } = Typography;
-
-interface Todo {
-  id: string;
-  content: string;
-  date: Date | null;
-  time: any;
-  reminder: boolean;
-  repeat: boolean;
-}
 
 const plugins = [gfm()];
 
