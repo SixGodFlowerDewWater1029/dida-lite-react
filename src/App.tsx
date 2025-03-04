@@ -63,7 +63,9 @@ const App: React.FC = () => {
       date: selectedDate || new Date(),
       time: selectedTime,
       reminder,
-      repeat
+      repeat,
+      completed: false,
+      deleted: false
     };
 
     setTodos(prev => [...prev, newTodo]);
@@ -91,12 +93,21 @@ const App: React.FC = () => {
   };
 
   const getTodosByDate = () => {
+    // 首先过滤掉已删除的待办事项
+    const activeTodos = todos.filter(todo => !todo.deleted);
+    const completedTodos = todos.filter(todo => todo.completed && !todo.deleted);
+    const deletedTodos = todos.filter(todo => todo.deleted);
+
     if (selectedMenuTitle === "今天") {
-      return todos.filter(todo => !todo.date || isToday(todo.date));
+      return activeTodos.filter(todo => !todo.completed && (!todo.date || isToday(todo.date)));
     } else if (selectedMenuTitle === "最近7天") {
-      return todos.filter(todo => todo.date && isWithinNext7Days(todo.date));
+      return activeTodos.filter(todo => !todo.completed && todo.date && isWithinNext7Days(todo.date));
     } else if (selectedMenuTitle === "收集箱") {
-      return todos;
+      return activeTodos.filter(todo => !todo.completed);
+    } else if (selectedMenuTitle === "已完成") {
+      return completedTodos;
+    } else if (selectedMenuTitle === "垃圾桶") {
+      return deletedTodos;
     }
     return [];
   };
@@ -236,7 +247,13 @@ const App: React.FC = () => {
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
                       <Checkbox 
+                        checked={todo.completed}
                         onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          setTodos(prev => prev.map(item => 
+                            item.id === todo.id ? { ...item, completed: e.target.checked } : item
+                          ));
+                        }}
                       >{todo.content}</Checkbox>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "12px", color: "#666" }}>
@@ -380,13 +397,18 @@ const App: React.FC = () => {
               items={[
                 { key: "1", label: "今天" },
                 { key: "2", label: "最近7天" },
-                { key: "3", label: "收集箱" }
+                { key: "3", label: "收集箱" },
+                { type: "divider" },
+                { key: "4", label: "已完成" },
+                { key: "5", label: "垃圾桶" }
               ]}
               onClick={({ key }) => {
                 const menuItems = [
                   { key: "1", label: "今天" },
                   { key: "2", label: "最近7天" },
-                  { key: "3", label: "收集箱" }
+                  { key: "3", label: "收集箱" },
+                  { key: "4", label: "已完成" },
+                  { key: "5", label: "垃圾桶" }
                 ];
                 const selectedItem = menuItems.find(i => i.key === key);
                 setSelectedMenuTitle(selectedItem?.label || "今天");

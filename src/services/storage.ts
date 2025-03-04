@@ -29,7 +29,9 @@ export const StorageService = {
         date: todo.date?.toISOString() || null,
         time: todo.time?.format('HH:mm') || null,
         reminder: todo.reminder,
-        repeat: todo.repeat
+        repeat: todo.repeat,
+        completed: todo.completed,
+        deleted: todo.deleted
       }));
       
       // Store each property separately to avoid the map type issue
