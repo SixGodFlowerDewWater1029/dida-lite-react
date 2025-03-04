@@ -27,7 +27,6 @@ const App: React.FC = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedTodo, setSelectedTodo] = React.useState<Todo | null>(null);
   const [clickPosition, setClickPosition] = React.useState<{ x: number; y: number } | null>(null);
-  const [contextMenuPosition, setContextMenuPosition] = React.useState<{ x: number; y: number } | null>(null);
 
   // 初始化StorageService并从本地存储加载待办事项
   useEffect(() => {
@@ -85,23 +84,20 @@ const App: React.FC = () => {
   };
 
   const getTodosByDate = () => {
-    // 首先过滤掉已删除的待办事项
-    const activeTodos = todos.filter(todo => !todo.deleted);
-    const completedTodos = todos.filter(todo => todo.completed && !todo.deleted);
-    const deletedTodos = todos.filter(todo => todo.deleted);
-  
-    if (selectedMenuTitle === "今天") {
-      return activeTodos.filter(todo => !todo.completed && (!todo.date || isToday(todo.date)));
-    } else if (selectedMenuTitle === "最近7天") {
-      return activeTodos.filter(todo => !todo.completed && todo.date && isWithinNext7Days(todo.date));
-    } else if (selectedMenuTitle === "收集箱") {
-      return activeTodos.filter(todo => !todo.completed);
-    } else if (selectedMenuTitle === "已完成") {
-      return completedTodos;
-    } else if (selectedMenuTitle === "垃圾桶") {
-      return deletedTodos;
+    switch (selectedMenuTitle) {
+      case "今天":
+        return todos.filter(todo => !todo.deleted && !todo.completed && (!todo.date || isToday(todo.date)));
+      case "最近7天":
+        return todos.filter(todo => !todo.deleted && !todo.completed && todo.date && isWithinNext7Days(todo.date));
+      case "收集箱":
+        return todos.filter(todo => !todo.deleted && !todo.completed);
+      case "已完成":
+        return todos.filter(todo => !todo.deleted && todo.completed);
+      case "垃圾桶":
+        return todos.filter(todo => todo.deleted);
+      default:
+        return [];
     }
-    return [];
   };
 
   const datePickerContent = (
@@ -166,9 +162,6 @@ const App: React.FC = () => {
     }
   };
 
-  const handleTodoContextMenu = (todo: Todo, event: React.MouseEvent) => {
-    event.preventDefault();
-  };
 
   const renderContent = () => {
     if (selectedNav === "2") {
@@ -242,7 +235,7 @@ const App: React.FC = () => {
                       position: "relative"
                     }}
                     onClick={(e) => handleTodoClick(todo, e)}
-                    onContextMenu={(e) => handleTodoContextMenu(todo, e)}
+
                   >
                     <Dropdown menu={{ items: [
                       {
