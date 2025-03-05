@@ -13,6 +13,28 @@ const { Title } = Typography;
 
 const plugins = [gfm()];
 
+/**
+ * App 组件是整个待办事项应用的主入口，负责管理应用的状态和渲染内容。
+ * 
+ * 该组件使用多个状态来跟踪用户的选择和待办事项，包括：
+ * - selectedMenuTitle: 当前选中的菜单标题
+ * - selectedDate: 用户选择的日期
+ * - selectedTime: 用户选择的时间
+ * - reminder: 是否设置提醒
+ * - repeat: 是否设置重复
+ * - popoverVisible: 日期选择器的可见性
+ * - selectedNav: 当前选中的导航项
+ * - inputValue: 输入框的值
+ * - todos: 待办事项列表
+ * - menuCollapsed: 菜单是否折叠
+ * - modalVisible: 编辑待办事项的模态框可见性
+ * - selectedTodo: 当前选中的待办事项
+ * - clickPosition: 点击位置，用于模态框定位
+ * 
+ * 该组件还包含多个副作用，用于初始化存储服务、加载和保存待办事项。
+ * 
+ * @returns {JSX.Element} 返回应用的主界面
+ */
 const App: React.FC = () => {
   const [selectedMenuTitle, setSelectedMenuTitle] = React.useState("今天");
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
@@ -30,6 +52,11 @@ const App: React.FC = () => {
 
   // 初始化StorageService并从本地存储加载待办事项
   useEffect(() => {
+    /**
+     * 初始化存储并加载待办事项。
+     * 该函数首先调用 StorageService 的初始化方法，
+     * 然后从存储中加载已保存的待办事项，并更新状态。
+     */
     const initStorage = async () => {
       await StorageService.init();
       const savedTodos = await StorageService.loadTodos();
@@ -45,6 +72,13 @@ const App: React.FC = () => {
     }
   }, [todos]);
 
+  /**
+   * 添加新的待办事项。
+   * 
+   * 此函数会检查输入值是否为空，如果不为空，则创建一个新的待办事项对象并将其添加到待办事项列表中。
+   * 新的待办事项包含唯一的 ID、内容、日期、时间、提醒、重复状态以及完成和删除状态。
+   * 添加后，重置输入值、日期、时间、提醒和重复状态，并隐藏弹出框。
+   */
   const addTodo = () => {
     if (!inputValue.trim()) return;
 
@@ -68,6 +102,12 @@ const App: React.FC = () => {
     setPopoverVisible(false);
   };
 
+  /**
+   * 检查给定的日期是否为今天。
+   * 
+   * @param date - 要检查的日期对象。
+   * @returns 如果给定的日期是今天，则返回 true；否则返回 false。
+   */
   const isToday = (date: Date) => {
     if (!date) return false;
     const today = new Date();
@@ -76,6 +116,12 @@ const App: React.FC = () => {
       date.getFullYear() === today.getFullYear();
   };
 
+  /**
+   * 检查给定日期是否在未来7天内。
+   * 
+   * @param date - 要检查的日期对象。
+   * @returns 如果日期在今天之后且在未来7天内，则返回true；否则返回false。
+   */
   const isWithinNext7Days = (date: Date) => {
     const today = new Date();
     const next7Days = new Date(today);
@@ -83,6 +129,17 @@ const App: React.FC = () => {
     return date > today && date <= next7Days;
   };
 
+  /**
+   * 根据选定的菜单标题获取待办事项列表。
+   * 
+   * @returns {Array} 过滤后的待办事项数组，依据所选菜单标题的不同，返回不同条件下的待办事项。
+   * - "今天": 返回今天的未删除且未完成的待办事项。
+   * - "最近7天": 返回未来7天内的未删除且未完成的待办事项。
+   * - "收集箱": 返回所有未删除且未完成的待办事项。
+   * - "已完成": 返回所有已完成的待办事项。
+   * - "垃圾桶": 返回所有已删除的待办事项。
+   * - 默认: 返回空数组。
+   */
   const getTodosByDate = () => {
     switch (selectedMenuTitle) {
       case "今天":
@@ -146,6 +203,15 @@ const App: React.FC = () => {
 
   const [editingTodoContent, setEditingTodoContent] = React.useState("");
 
+  /**
+   * 处理待办事项内容的编辑。
+   * 
+   * @param todo - 要编辑的待办事项对象。
+   * @param newContent - 新的待办事项内容。
+   * 
+   * 如果新的内容为空字符串或仅包含空格，则不进行任何操作。
+   * 否则，更新对应待办事项的内容为新的内容。
+   */
   const handleTodoContentEdit = (todo: Todo, newContent: string) => {
     if (!newContent.trim()) return;
     setTodos(prev => prev.map(item => 
@@ -153,16 +219,40 @@ const App: React.FC = () => {
     ));
   };
 
+  /**
+   * 处理待办事项的点击事件。
+   * 
+   * @param todo - 被点击的待办事项对象。
+   * @param event - 触发事件的鼠标事件对象。
+   * 
+   * 当用户点击待办事项时，记录点击位置、设置选中的待办事项、更新编辑内容，并显示模态框。
+   */
   const handleTodoClick = (todo: Todo, event: React.MouseEvent) => {
     if (event.type === 'click') {
       setClickPosition({ x: event.clientX, y: event.clientY });
       setSelectedTodo(todo);
       setEditingTodoContent(todo.content);
+      // 显示模态框
+      console.log("显示模态框");
       setModalVisible(true);
     }
   };
 
 
+  /**
+   * 渲染应用的主要内容，根据选中的导航项动态显示不同的组件。
+   * 
+   * 当选中的导航项为 "2" 时，显示全屏日历组件；否则，显示待办事项和习惯列表。
+   * 
+   * 包含以下功能：
+   * - 添加待办事项
+   * - 显示今日待办事项
+   * - 支持待办事项的删除和状态切换
+   * - 显示习惯列表
+   * - 弹出模态框编辑待办事项内容
+   * 
+   * @returns {JSX.Element} 渲染的内容组件
+   */
   const renderContent = () => {
     if (selectedNav === "2") {
       return (
@@ -242,7 +332,9 @@ const App: React.FC = () => {
                         key: 'delete',
                         label: '删除',
                         icon: <DeleteOutlined />,
-                        onClick: () => {
+                        onClick: (info) => {
+                          console.log("删除待办事项");
+                          info.domEvent.stopPropagation();
                           setTodos(prev => prev.map(item =>
                             item.id === todo.id ? { ...item, deleted: true } : item
                           ));
@@ -257,6 +349,7 @@ const App: React.FC = () => {
                             setTodos(prev => prev.map(item => 
                               item.id === todo.id ? { ...item, completed: e.target.checked } : item
                             ));
+                            e.stopPropagation()
                           }}
                         >{todo.content}</Checkbox>
                       </div>
