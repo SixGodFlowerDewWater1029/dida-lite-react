@@ -325,7 +325,6 @@ const App: React.FC = () => {
                       position: "relative"
                     }}
                     onClick={(e) => handleTodoClick(todo, e)}
-
                   >
                     <Dropdown menu={{ items: [
                       {
@@ -344,12 +343,16 @@ const App: React.FC = () => {
                       <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
                         <Checkbox 
                           checked={todo.completed}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.nativeEvent.stopImmediatePropagation();
+                            e.stopPropagation();
+                          }}
                           onChange={(e) => {
+                            e.nativeEvent.stopImmediatePropagation();
                             setTodos(prev => prev.map(item => 
                               item.id === todo.id ? { ...item, completed: e.target.checked } : item
                             ));
-                            e.stopPropagation()
+                            e.stopPropagation();
                           }}
                         >{todo.content}</Checkbox>
                       </div>
