@@ -52,6 +52,7 @@ const App: React.FC = () => {
   const [reminderOptions, setReminderOptions] = React.useState<string[]>([]);
   const [reminderPopoverVisible, setReminderPopoverVisible] = React.useState(false);
   const [timePickerFocused, setTimePickerFocused] = React.useState(false);
+  const [repeatPopoverVisible, setRepeatPopoverVisible] = React.useState(false);
 
   // 初始化StorageService并从本地存储加载待办事项
   useEffect(() => {
@@ -245,33 +246,47 @@ const App: React.FC = () => {
       <div style={{ padding: '12px 0', borderTop: '1px solid #f0f0f0' }}>
         <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ClockCircleOutlined />
-          <TimePicker
-            format="HH:mm"
-            placeholder="选择时间"
-            value={selectedTime}
-            onChange={setSelectedTime}
-            style={{ 
-              width: '100%',
-            }}
-            popupStyle={{ 
-              padding: '0',
-              boxShadow: '0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05)',
-              backgroundColor: '#fff',
-              zIndex: 1050
-            }}
-            dropdownClassName="time-picker-dropdown"
-            getPopupContainer={(triggerNode) => triggerNode.parentNode ? triggerNode.parentNode as HTMLElement : document.body}
-            bordered={false}
-            inputReadOnly={true}
-            suffixIcon={<span style={{ color: '#bfbfbf' }}>{timePickerFocused ? '▼' : '▶'}</span>}
-            onFocus={() => setTimePickerFocused(true)}
-            onBlur={() => setTimePickerFocused(false)}
-            open={timePickerFocused}
-            onOpenChange={(open) => setTimePickerFocused(open)}
-          />
+          <div style={{ flex: 1 }}>
+            <TimePicker
+              format="HH:mm"
+              placeholder="选择时间"
+              value={selectedTime}
+              onChange={setSelectedTime}
+              style={{ 
+                width: '100%',
+              }}
+              popupStyle={{ 
+                padding: '0',
+                boxShadow: '0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05)',
+                backgroundColor: '#fff',
+                zIndex: 1050
+              }}
+              dropdownClassName="time-picker-dropdown"
+              getPopupContainer={(triggerNode) => triggerNode.parentNode ? triggerNode.parentNode as HTMLElement : document.body}
+              bordered={false}
+              inputReadOnly={true}
+              suffixIcon={null}
+              onFocus={() => setTimePickerFocused(true)}
+              onBlur={() => setTimePickerFocused(false)}
+              open={timePickerFocused}
+              onOpenChange={(open) => setTimePickerFocused(open)}
+            />
+          </div>
+          <span style={{ color: '#bfbfbf', cursor: 'pointer', width: '20px', textAlign: 'center' }} onClick={() => setTimePickerFocused(!timePickerFocused)}>
+            {timePickerFocused ? '▼' : '▶'}
+          </span>
         </div>
         <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              cursor: 'pointer',
+              flex: 1
+            }}
+            onClick={() => setReminderPopoverVisible(!reminderPopoverVisible)}
+          >
             <BellOutlined />
             <span>提醒</span>
           </div>
@@ -287,28 +302,28 @@ const App: React.FC = () => {
             }}
             getPopupContainer={(triggerNode) => triggerNode.parentNode ? triggerNode.parentNode as HTMLElement : document.body}
           >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ marginRight: '8px', fontSize: '12px', color: '#1677ff' }}>
-                {reminderOptions.length > 0 ? `已选择 ${reminderOptions.length} 项` : ''}
-              </span>
-              <Switch 
-                checked={reminder} 
-                onChange={(checked) => {
-                  setReminder(checked);
-                  if (checked && reminderOptions.length === 0) {
-                    setReminderOptions(['onTime']);
-                  }
-                }} 
-              />
-            </div>
+            <span style={{ color: '#bfbfbf', cursor: 'pointer', width: '20px', textAlign: 'center' }}>
+              {reminderPopoverVisible ? '▼' : '▶'}
+            </span>
           </Popover>
         </div>
         <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px',
+              cursor: 'pointer',
+              flex: 1
+            }}
+            onClick={() => setRepeatPopoverVisible(!repeatPopoverVisible)}
+          >
             <RedoOutlined />
             <span>重复</span>
           </div>
-          <Switch checked={repeat} onChange={setRepeat} />
+          <span style={{ color: '#bfbfbf', cursor: 'pointer', width: '20px', textAlign: 'center' }}>
+            {repeatPopoverVisible ? '▼' : '▶'}
+          </span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
           <Button onClick={() => {
