@@ -260,7 +260,7 @@ const App: React.FC = () => {
               zIndex: 1050
             }}
             dropdownClassName="time-picker-dropdown"
-            getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode ? triggerNode.parentNode as HTMLElement : document.body}
             bordered={false}
             inputReadOnly={true}
             suffixIcon={<span style={{ color: '#bfbfbf' }}>{timePickerFocused ? '▼' : '▶'}</span>}
@@ -285,7 +285,7 @@ const App: React.FC = () => {
               zIndex: 1060,
               backgroundColor: '#fff'
             }}
-            getPopupContainer={(triggerNode) => triggerNode.parentNode.parentNode as HTMLElement}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode ? triggerNode.parentNode as HTMLElement : document.body}
           >
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <span style={{ marginRight: '8px', fontSize: '12px', color: '#1677ff' }}>

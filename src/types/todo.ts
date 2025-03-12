@@ -6,6 +6,7 @@ export interface Todo {
   date: Date | null;
   time: Dayjs | null;
   reminder: boolean;
+  reminderOptions?: string[];
   repeat: boolean;
   completed: boolean;
   deleted: boolean;
