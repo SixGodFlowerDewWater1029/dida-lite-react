@@ -285,108 +285,121 @@ const App: React.FC = () => {
         </div>
         <div style={{ display: "flex", gap: "20px" }}>
           <div style={{ flex: 1 }}>
-            <Input 
-              placeholder="添加待办事项" 
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onPressEnter={addTodo}
-              style={{ marginBottom: "20px", height: '32px' }} 
-              suffix={
-                <Popover 
-                  content={datePickerContent}
-                  trigger="click"
-                  placement="bottomRight"
-                  open={popoverVisible}
-                  onOpenChange={setPopoverVisible}
-                >
-                  <CalendarOutlined 
-                    style={{ cursor: 'pointer' }} 
-                    className="calendar-icon" 
-                  />
-                </Popover>
-              }
-            />
-            <div style={{ marginBottom: "20px" }}>
-              <Title level={4}>今日待办</Title>
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                {getTodosByDate().map(todo => (
-                  <div 
-                    key={todo.id} 
-                    data-todo-id={todo.id}
-                    style={{ 
-                      display: "flex", 
-                      alignItems: "center", 
-                      gap: "8px", 
-                      padding: "8px", 
-                      borderRadius: "4px", 
-                      backgroundColor: "#f9f9f9", 
-                      marginBottom: "4px",
-                      cursor: "pointer",
-                      position: "relative"
-                    }}
-                    onClick={(e) => handleTodoClick(todo, e)}
+            {selectedMenuTitle !== "已完成" && selectedMenuTitle !== "垃圾桶" && (
+              <Input 
+                placeholder="添加待办事项" 
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onPressEnter={addTodo}
+                style={{ marginBottom: "20px", height: '32px' }} 
+                suffix={
+                  <Popover 
+                    content={datePickerContent}
+                    trigger="click"
+                    placement="bottomRight"
+                    open={popoverVisible}
+                    onOpenChange={setPopoverVisible}
                   >
-                    <Dropdown menu={{ items: [
-                      {
-                        key: 'delete',
-                        label: '删除',
-                        icon: <DeleteOutlined />,
-                        onClick: (info) => {
-                          console.log("删除待办事项");
-                          info.domEvent.stopPropagation();
-                          setTodos(prev => prev.map(item =>
-                            item.id === todo.id ? { ...item, deleted: true } : item
-                          ));
-                        }
-                      }
-                    ]}} trigger={['contextMenu']}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
-                        <Checkbox 
-                          checked={todo.completed}
-                          onClick={(e) => {
-                            e.nativeEvent.stopImmediatePropagation();
-                            e.stopPropagation();
-                          }}
-                          onChange={(e) => {
-                            e.nativeEvent.stopImmediatePropagation();
-                            setTodos(prev => prev.map(item => 
-                              item.id === todo.id ? { ...item, completed: e.target.checked } : item
-                            ));
-                            e.stopPropagation();
-                          }}
-                        >{todo.content}</Checkbox>
-                      </div>
-                    </Dropdown>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "12px", color: "#666" }}>
-                      {todo.date && (
-                        <span>
-                          {isToday(todo.date) ? "今天" : todo.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
-                        </span>
-                      )}
-                      {todo.time && <span>{todo.time.format("HH:mm")}</span>}
-                      {todo.reminder && (
-                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                          <BellOutlined style={{ fontSize: "14px" }} />
-                        </span>
-                      )}
-                      {todo.repeat && (
-                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                          <RedoOutlined style={{ fontSize: "14px" }} />
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <Title level={4}>习惯</Title>
+                    <CalendarOutlined 
+                      style={{ cursor: 'pointer' }} 
+                      className="calendar-icon" 
+                    />
+                  </Popover>
+                }
+              />
+            )}
+            
+            <div style={{ marginBottom: "20px" }}>
+              <Title level={4}>{selectedMenuTitle === "已完成" ? "已完成的任务" : "今日待办"}</Title>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <Checkbox>锻炼身体</Checkbox>
-                <Checkbox>早睡早起</Checkbox>
-                <Checkbox>喝水</Checkbox>
+                {getTodosByDate()
+                  .sort((a, b) => {
+                    return selectedMenuTitle === "已完成" ? 
+                      parseInt(b.id) - parseInt(a.id) : 0;
+                  })
+                  .map(todo => (
+                    <div 
+                      key={todo.id} 
+                      data-todo-id={todo.id}
+                      style={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        gap: "8px", 
+                        padding: "8px", 
+                        borderRadius: "4px", 
+                        backgroundColor: "#f9f9f9", 
+                        marginBottom: "4px",
+                        cursor: "pointer",
+                        position: "relative"
+                      }}
+                      onClick={(e) => handleTodoClick(todo, e)}
+                    >
+                      <Dropdown menu={{ items: [
+                        {
+                          key: 'delete',
+                          label: '删除',
+                          icon: <DeleteOutlined />,
+                          onClick: (info) => {
+                            console.log("删除待办事项");
+                            if (info && info.domEvent) {
+                              info.domEvent.stopPropagation();
+                            }
+                            setTodos(prev => prev.map(item =>
+                              item.id === todo.id ? { ...item, deleted: true } : item
+                            ));
+                          }
+                        }
+                      ]}} trigger={['contextMenu']}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
+                          <Checkbox 
+                            checked={todo.completed}
+                            onClick={(e) => {
+                              e.nativeEvent.stopImmediatePropagation();
+                              e.stopPropagation();
+                            }}
+                            onChange={(e) => {
+                              e.nativeEvent.stopImmediatePropagation();
+                              setTodos(prev => prev.map(item => 
+                                item.id === todo.id ? { ...item, completed: e.target.checked } : item
+                              ));
+                              e.stopPropagation();
+                            }}
+                          >{todo.content}</Checkbox>
+                        </div>
+                      </Dropdown>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "12px", color: "#666" }}>
+                        {todo.date && (
+                          <span>
+                            {isToday(todo.date) ? "今天" : todo.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                          </span>
+                        )}
+                        {todo.time && <span>{todo.time.format("HH:mm")}</span>}
+                        {todo.reminder && (
+                          <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                            <BellOutlined style={{ fontSize: "14px" }} />
+                          </span>
+                        )}
+                        {todo.repeat && (
+                          <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                            <RedoOutlined style={{ fontSize: "14px" }} />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
+            
+            {selectedMenuTitle !== "已完成" && selectedMenuTitle !== "垃圾桶" && (
+              <div>
+                <Title level={4}>习惯</Title>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <Checkbox>锻炼身体</Checkbox>
+                  <Checkbox>早睡早起</Checkbox>
+                  <Checkbox>喝水</Checkbox>
+                </div>
+              </div>
+            )}
           </div>
           <div style={{ width: 300 }}>
             <Calendar fullscreen={false} style={{ border: "1px solid #f0f0f0", borderRadius: 8 }} />
@@ -481,7 +494,6 @@ const App: React.FC = () => {
           ]}
           className="main-nav"
           onClick={({ key }) => {
-            // 只有当点击的不是头像按钮（key不等于"0"）时，才更新selectedNav
             if (key !== "0") {
               setSelectedNav(key);
             }
