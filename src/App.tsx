@@ -310,11 +310,15 @@ const App: React.FC = () => {
             )}
             
             <div style={{ marginBottom: "20px" }}>
-              <Title level={4}>{selectedMenuTitle === "已完成" ? "已完成的任务" : "今日待办"}</Title>
+              <Title level={4}>
+                {selectedMenuTitle === "已完成" ? "" : 
+                 selectedMenuTitle === "垃圾桶" ? "" : "今日待办"}
+              </Title>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {getTodosByDate()
                   .sort((a, b) => {
-                    return selectedMenuTitle === "已完成" ? 
+                    // 已完成和垃圾桶视图按时间倒序排列
+                    return (selectedMenuTitle === "已完成" || selectedMenuTitle === "垃圾桶") ? 
                       parseInt(b.id) - parseInt(a.id) : 0;
                   })
                   .map(todo => (
