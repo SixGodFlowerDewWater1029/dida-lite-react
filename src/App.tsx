@@ -49,6 +49,9 @@ const App: React.FC = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedTodo, setSelectedTodo] = React.useState<Todo | null>(null);
   const [clickPosition, setClickPosition] = React.useState<{ x: number; y: number } | null>(null);
+  const [reminderOptions, setReminderOptions] = React.useState<string[]>([]);
+  const [reminderPopoverVisible, setReminderPopoverVisible] = React.useState(false);
+  const [timePickerFocused, setTimePickerFocused] = React.useState(false);
 
   // 初始化StorageService并从本地存储加载待办事项
   useEffect(() => {
@@ -88,6 +91,7 @@ const App: React.FC = () => {
       date: selectedDate || new Date(),
       time: selectedTime,
       reminder,
+      reminderOptions: reminderOptions.length > 0 ? [...reminderOptions] : undefined,
       repeat,
       completed: false,
       deleted: false
@@ -98,6 +102,7 @@ const App: React.FC = () => {
     setSelectedDate(null);
     setSelectedTime(null);
     setReminder(false);
+    setReminderOptions([]);
     setRepeat(false);
     setPopoverVisible(false);
   };
@@ -157,6 +162,83 @@ const App: React.FC = () => {
     }
   };
 
+  const reminderContent = (
+    <div style={{ width: 300, backgroundColor: '#fff' }}>
+      <div style={{ 
+        padding: '8px 12px', 
+        borderBottom: '1px solid #f0f0f0',
+        display: 'flex',
+        alignItems: 'center'
+      }}>
+        <BellOutlined style={{ marginRight: '8px', color: '#1677ff' }} />
+        <Input 
+          value="准时" 
+          style={{ 
+            border: 'none', 
+            boxShadow: 'none',
+            fontSize: '14px',
+            padding: '0',
+            color: '#1677ff',
+            fontWeight: 'bold'
+          }}
+          readOnly
+          suffix={<span style={{ cursor: 'pointer' }}>×</span>}
+        />
+      </div>
+      <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
+        {[
+          { value: 'onTime', label: '准时' },
+          { value: '5min', label: '提前 5 分钟' },
+          { value: '30min', label: '提前 30 分钟' },
+          { value: '1hour', label: '提前 1 小时' },
+          { value: '1day', label: '提前 1 天' },
+          { value: 'custom', label: '自定义' }
+        ].map(option => (
+          <div 
+            key={option.value}
+            style={{ 
+              padding: '8px 12px', 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+            onClick={() => {
+              const newOptions = [...reminderOptions];
+              const index = newOptions.indexOf(option.value);
+              if (index >= 0) {
+                newOptions.splice(index, 1);
+              } else {
+                newOptions.push(option.value);
+              }
+              setReminderOptions(newOptions);
+            }}
+          >
+            <span>{option.label}</span>
+            {reminderOptions.includes(option.value) && (
+              <span style={{ color: '#1677ff' }}>✓</span>
+            )}
+          </div>
+        ))}
+      </div>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        padding: '12px',
+        borderTop: '1px solid #f0f0f0'
+      }}>
+        <Button onClick={() => {
+          setReminderOptions([]);
+          setReminderPopoverVisible(false);
+        }}>取消</Button>
+        <Button type="primary" onClick={() => {
+          setReminder(reminderOptions.length > 0);
+          setReminderPopoverVisible(false);
+        }}>确定</Button>
+      </div>
+    </div>
+  );
+
   const datePickerContent = (
     <div style={{ width: 300 }}>
       <Calendar fullscreen={false} onChange={(date) => setSelectedDate(date.toDate())} />
@@ -168,7 +250,24 @@ const App: React.FC = () => {
             placeholder="选择时间"
             value={selectedTime}
             onChange={setSelectedTime}
-            style={{ width: '100%' }}
+            style={{ 
+              width: '100%',
+            }}
+            popupStyle={{ 
+              padding: '0',
+              boxShadow: '0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05)',
+              backgroundColor: '#fff',
+              zIndex: 1050
+            }}
+            dropdownClassName="time-picker-dropdown"
+            getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
+            bordered={false}
+            inputReadOnly={true}
+            suffixIcon={<span style={{ color: '#bfbfbf' }}>{timePickerFocused ? '▼' : '▶'}</span>}
+            onFocus={() => setTimePickerFocused(true)}
+            onBlur={() => setTimePickerFocused(false)}
+            open={timePickerFocused}
+            onOpenChange={(open) => setTimePickerFocused(open)}
           />
         </div>
         <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -176,7 +275,33 @@ const App: React.FC = () => {
             <BellOutlined />
             <span>提醒</span>
           </div>
-          <Switch checked={reminder} onChange={setReminder} />
+          <Popover
+            content={reminderContent}
+            trigger="click"
+            open={reminderPopoverVisible}
+            onOpenChange={setReminderPopoverVisible}
+            placement="right"
+            overlayStyle={{ 
+              zIndex: 1060,
+              backgroundColor: '#fff'
+            }}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode.parentNode as HTMLElement}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: '8px', fontSize: '12px', color: '#1677ff' }}>
+                {reminderOptions.length > 0 ? `已选择 ${reminderOptions.length} 项` : ''}
+              </span>
+              <Switch 
+                checked={reminder} 
+                onChange={(checked) => {
+                  setReminder(checked);
+                  if (checked && reminderOptions.length === 0) {
+                    setReminderOptions(['onTime']);
+                  }
+                }} 
+              />
+            </div>
+          </Popover>
         </div>
         <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -190,6 +315,7 @@ const App: React.FC = () => {
             setSelectedDate(null);
             setSelectedTime(null);
             setReminder(false);
+            setReminderOptions([]);
             setRepeat(false);
           }}>清除</Button>
           <Button type="primary" onClick={() => {
