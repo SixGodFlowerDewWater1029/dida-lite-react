@@ -163,29 +163,32 @@ const App: React.FC = () => {
     }
   };
 
+  const getReminderDisplayText = () => {
+    if (reminderOptions.length === 0) return "提醒";
+    
+    // 创建一个映射，将选项值转换为显示文本
+    const optionMap: {[key: string]: string} = {
+      'onTime': '准时',
+      '5min': '提前5分钟',
+      '30min': '提前30分钟',
+      '1hour': '提前1小时',
+      '1day': '提前1天',
+      'custom': '自定义'
+    };
+    
+    // 获取选中选项的显示文本
+    const selectedTexts = reminderOptions.map(option => optionMap[option] || option);
+    
+    // 如果选项太多，使用省略号
+    const displayText = selectedTexts.join('; ');
+    if (displayText.length > 15) {
+      return displayText.substring(0, 12) + '...';
+    }
+    return displayText;
+  };
+
   const reminderContent = (
     <div style={{ width: 300, backgroundColor: '#fff' }}>
-      <div style={{ 
-        padding: '8px 12px', 
-        borderBottom: '1px solid #f0f0f0',
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <BellOutlined style={{ marginRight: '8px', color: '#1677ff' }} />
-        <Input 
-          value="准时" 
-          style={{ 
-            border: 'none', 
-            boxShadow: 'none',
-            fontSize: '14px',
-            padding: '0',
-            color: '#1677ff',
-            fontWeight: 'bold'
-          }}
-          readOnly
-          suffix={<span style={{ cursor: 'pointer' }}>×</span>}
-        />
-      </div>
       <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
         {[
           { value: 'onTime', label: '准时' },
@@ -288,7 +291,12 @@ const App: React.FC = () => {
             onClick={() => setReminderPopoverVisible(!reminderPopoverVisible)}
           >
             <BellOutlined />
-            <span>提醒</span>
+            <span style={{ 
+              color: reminderOptions.length > 0 ? '#1677ff' : 'inherit',
+              fontWeight: reminderOptions.length > 0 ? 'bold' : 'normal'
+            }}>
+              {getReminderDisplayText()}
+            </span>
           </div>
           <Popover
             content={reminderContent}
@@ -378,7 +386,6 @@ const App: React.FC = () => {
       setModalVisible(true);
     }
   };
-
 
   /**
    * 渲染应用的主要内容，根据选中的导航项动态显示不同的组件。
