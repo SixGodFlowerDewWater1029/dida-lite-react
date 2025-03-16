@@ -462,13 +462,14 @@ const App: React.FC = () => {
             <div style={{ marginBottom: "20px" }}>
               <Title level={4}>
                 {selectedMenuTitle === "已完成" ? "" : 
-                 selectedMenuTitle === "垃圾桶" ? "" : "今日待办"}
+                 selectedMenuTitle === "垃圾桶" ? "" : 
+                 selectedMenuTitle === "收集箱" ? "未完成" : "今日待办"}
               </Title>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {getTodosByDate()
                   .sort((a, b) => {
-                    // 已完成和垃圾桶视图按时间倒序排列
-                    return (selectedMenuTitle === "已完成" || selectedMenuTitle === "垃圾桶") ? 
+                    // 已完成、垃圾桶和收集箱视图按时间倒序排列
+                    return (selectedMenuTitle === "已完成" || selectedMenuTitle === "垃圾桶" || selectedMenuTitle === "收集箱") ? 
                       parseInt(b.id) - parseInt(a.id) : 0;
                   })
                   .map(todo => (
@@ -544,7 +545,88 @@ const App: React.FC = () => {
               </div>
             </div>
             
-            {selectedMenuTitle !== "已完成" && selectedMenuTitle !== "垃圾桶" && (
+            {selectedMenuTitle === "收集箱" && (
+              <div style={{ marginBottom: "20px" }}>
+                <Title level={4}>已完成</Title>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {todos
+                    .filter(todo => !todo.deleted && todo.completed)
+                    .sort((a, b) => parseInt(b.id) - parseInt(a.id))
+                    .map(todo => (
+                      <div 
+                        key={todo.id} 
+                        data-todo-id={todo.id}
+                        style={{ 
+                          display: "flex", 
+                          alignItems: "center", 
+                          gap: "8px", 
+                          padding: "8px", 
+                          borderRadius: "4px", 
+                          backgroundColor: "#f9f9f9", 
+                          marginBottom: "4px",
+                          cursor: "pointer",
+                          position: "relative"
+                        }}
+                        onClick={(e) => handleTodoClick(todo, e)}
+                      >
+                        <Dropdown menu={{ items: [
+                          {
+                            key: 'delete',
+                            label: '删除',
+                            icon: <DeleteOutlined />,
+                            onClick: (info) => {
+                              console.log("删除待办事项");
+                              if (info && info.domEvent) {
+                                info.domEvent.stopPropagation();
+                              }
+                              setTodos(prev => prev.map(item =>
+                                item.id === todo.id ? { ...item, deleted: true } : item
+                              ));
+                            }
+                          }
+                        ]}} trigger={['contextMenu']}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
+                            <Checkbox 
+                              checked={todo.completed}
+                              onClick={(e) => {
+                                e.nativeEvent.stopImmediatePropagation();
+                                e.stopPropagation();
+                              }}
+                              onChange={(e) => {
+                                e.nativeEvent.stopImmediatePropagation();
+                                setTodos(prev => prev.map(item => 
+                                  item.id === todo.id ? { ...item, completed: e.target.checked } : item
+                                ));
+                                e.stopPropagation();
+                              }}
+                            >{todo.content}</Checkbox>
+                          </div>
+                        </Dropdown>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "12px", color: "#666" }}>
+                          {todo.date && (
+                            <span>
+                              {isToday(todo.date) ? "今天" : todo.date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                            </span>
+                          )}
+                          {todo.time && <span>{todo.time.format("HH:mm")}</span>}
+                          {todo.reminder && (
+                            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                              <BellOutlined style={{ fontSize: "14px" }} />
+                            </span>
+                          )}
+                          {todo.repeat && (
+                            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                              <RedoOutlined style={{ fontSize: "14px" }} />
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+            
+            {selectedMenuTitle !== "已完成" && selectedMenuTitle !== "垃圾桶" && selectedMenuTitle !== "收集箱" && (
               <div>
                 <Title level={4}>习惯</Title>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
