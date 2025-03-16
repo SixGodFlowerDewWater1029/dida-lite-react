@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import path from "path";
 import react from "@vitejs/plugin-react";
 
 // @ts-expect-error process is a nodejs global
