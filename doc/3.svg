@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- 主业务逻辑框 -->
+  <rect x="300" y="50" width="200" height="100" rx="5" ry="5" fill="#4682B4" stroke="#000" stroke-width="1"/>
+  <text x="400" y="100" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">主业务逻辑</text>
+  
+  <!-- 库存服务框 -->
+  <rect x="100" y="250" width="200" height="100" rx="5" ry="5" fill="#2E8B57" stroke="#000" stroke-width="1"/>
+  <text x="200" y="300" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">库存服务</text>
+  
+  <!-- 订单服务框 -->
+  <rect x="500" y="250" width="200" height="100" rx="5" ry="5" fill="#2E8B57" stroke="#000" stroke-width="1"/>
+  <text x="600" y="300" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">订单服务</text>
+  
+  <!-- 库存DB圆柱 -->
+  <ellipse cx="200" cy="450" rx="100" ry="30" fill="#4682B4" stroke="#000" stroke-width="1"/>
+  <rect x="100" y="450" width="200" height="80" fill="#4682B4" stroke="#000" stroke-width="1"/>
+  <ellipse cx="200" cy="530" rx="100" ry="30" fill="#4682B4" stroke="#000" stroke-width="1"/>
+  <text x="200" y="490" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">库存DB</text>
+  
+  <!-- 订单DB圆柱 -->
+  <ellipse cx="600" cy="450" rx="100" ry="30" fill="#4682B4" stroke="#000" stroke-width="1"/>
+  <rect x="500" y="450" width="200" height="80" fill="#4682B4" stroke="#000" stroke-width="1"/>
+  <ellipse cx="600" cy="530" rx="100" ry="30" fill="#4682B4" stroke="#000" stroke-width="1"/>
+  <text x="600" y="490" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">订单DB</text>
+  
+  <!-- 连接线 -->
+  <!-- 主业务到库存服务 -->
+  <path d="M 320 150 L 200 250" stroke="#4682B4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- 主业务到订单服务 -->
+  <path d="M 480 150 L 600 250" stroke="#4682B4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- 库存服务到库存DB -->
+  <path d="M 200 350 L 200 420" stroke="#4682B4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- 订单服务到订单DB -->
+  <path d="M 600 350 L 600 420" stroke="#4682B4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- 箭头标记定义 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4682B4"/>
+    </marker>
+  </defs>
+</svg>
