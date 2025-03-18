@@ -1,0 +1,172 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="800" height="600" fill="white"/>
+  
+  <!-- 标题 -->
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" fill="black" style="font-weight:bold">机器学习的本质</text>
+  
+  <!-- 1. 数据输入：漏斗 -->
+  <g transform="translate(150, 100)">
+    <text x="0" y="-20" font-family="Arial" font-size="18" fill="black">数据输入</text>
+    
+    <!-- 漏斗 -->
+    <path d="M0,0 L100,0 L80,100 L20,100 Z" stroke="black" stroke-width="2" fill="none" style="stroke-dasharray:5,2"/>
+    
+    <!-- 数据图标 -->
+    <g transform="translate(0, -30)">
+      <!-- 图片 -->
+      <rect x="10" y="0" width="20" height="20" stroke="black" stroke-width="1" fill="none"/>
+      <line x1="15" y1="5" x2="25" y2="15" stroke="black" stroke-width="1"/>
+      <line x1="25" y1="5" x2="15" y2="15" stroke="black" stroke-width="1"/>
+      
+      <!-- 文本 -->
+      <g transform="translate(40, 0)">
+        <line x1="0" y1="5" x2="20" y2="5" stroke="black" stroke-width="1"/>
+        <line x1="0" y1="10" x2="15" y2="10" stroke="black" stroke-width="1"/>
+        <line x1="0" y1="15" x2="18" y2="15" stroke="black" stroke-width="1"/>
+      </g>
+      
+      <!-- 数字 -->
+      <g transform="translate(70, 0)">
+        <text x="0" y="15" font-family="Arial" font-size="14" fill="black">123</text>
+      </g>
+    </g>
+    
+    <!-- 数据流动箭头 -->
+    <path d="M50,110 L50,150" stroke="black" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  </g>
+  
+  <!-- 2. 模型训练：大脑和小人 -->
+  <g transform="translate(400, 200)">
+    <text x="0" y="-70" font-family="Arial" font-size="18" fill="black">模型训练</text>
+    
+    <!-- 大脑形状 -->
+    <path d="M-80,-50 C-70,-70 -40,-80 0,-80 C40,-80 70,-70 80,-50 C90,-30 90,0 80,20 C70,40 50,50 30,60 C10,70 -10,70 -30,60 C-50,50 -70,40 -80,20 C-90,0 -90,-30 -80,-50 Z" 
+          stroke="black" stroke-width="2" fill="none" style="stroke-linecap:round"/>
+    
+    <!-- 神经网络连接线 -->
+    <g>
+      <circle cx="-50" cy="-40" r="5" stroke="black" stroke-width="1" fill="none"/>
+      <circle cx="-20" cy="-50" r="5" stroke="black" stroke-width="1" fill="none"/>
+      <circle cx="20" cy="-50" r="5" stroke="black" stroke-width="1" fill="none"/>
+      <circle cx="50" cy="-40" r="5" stroke="black" stroke-width="1" fill="none"/>
+      
+      <circle cx="-40" cy="-10" r="5" stroke="black" stroke-width="1" fill="none"/>
+      <circle cx="0" cy="-15" r="5" stroke="black" stroke-width="1" fill="none"/>
+      <circle cx="40" cy="-10" r="5" stroke="black" stroke-width="1" fill="none"/>
+      
+      <circle cx="-30" cy="30" r="5" stroke="black" stroke-width="1" fill="none"/>
+      <circle cx="0" cy="40" r="5" stroke="black" stroke-width="1" fill="none"/>
+      <circle cx="30" cy="30" r="5" stroke="black" stroke-width="1" fill="none"/>
+      
+      <!-- 连接线 -->
+      <line x1="-50" y1="-40" x2="-40" y2="-10" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="-20" y1="-50" x2="-40" y2="-10" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="-20" y1="-50" x2="0" y2="-15" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="20" y1="-50" x2="0" y2="-15" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="20" y1="-50" x2="40" y2="-10" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="50" y1="-40" x2="40" y2="-10" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      
+      <line x1="-40" y1="-10" x2="-30" y2="30" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="0" y1="-15" x2="-30" y2="30" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="0" y1="-15" x2="0" y2="40" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="0" y1="-15" x2="30" y2="30" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="40" y1="-10" x2="30" y2="30" stroke="black" stroke-width="1" stroke-dasharray="2,2"/>
+    </g>
+    
+    <!-- 小人和放大镜 -->
+    <g transform="translate(120, 0)">
+      <!-- 小人 -->
+      <circle cx="0" cy="-30" r="10" stroke="black" stroke-width="1.5" fill="none"/> <!-- 头 -->
+      <line x1="0" y1="-20" x2="0" y2="10" stroke="black" stroke-width="1.5"/> <!-- 身体 -->
+      <line x1="0" y1="-10" x2="-15" y2="0" stroke="black" stroke-width="1.5"/> <!-- 左手 -->
+      <line x1="-15" y1="0" x2="-30" y2="-15" stroke="black" stroke-width="1.5"/> <!-- 左手拿放大镜 -->
+      <line x1="0" y1="-10" x2="15" y2="0" stroke="black" stroke-width="1.5"/> <!-- 右手 -->
+      <line x1="0" y1="10" x2="-10" y2="30" stroke="black" stroke-width="1.5"/> <!-- 左腿 -->
+      <line x1="0" y1="10" x2="10" y2="30" stroke="black" stroke-width="1.5"/> <!-- 右腿 -->
+      
+      <!-- 放大镜 -->
+      <circle cx="-40" cy="-25" r="10" stroke="black" stroke-width="1.5" fill="none"/>
+      <line x1="-33" y1="-18" x2="-25" y2="-10" stroke="black" stroke-width="1.5"/>
+    </g>
+  </g>
+  
+  <!-- 3. 学习过程：黑板和循环 -->
+  <g transform="translate(200, 400)">
+    <text x="0" y="-20" font-family="Arial" font-size="18" fill="black">学习过程</text>
+    
+    <!-- 黑板 -->
+    <rect x="0" y="0" width="200" height="120" stroke="black" stroke-width="2" fill="none"/>
+    
+    <!-- 循环过程 -->
+    <text x="20" y="30" font-family="Arial" font-size="14" fill="black">尝试 → 错误 → 调整 → 重试</text>
+    
+    <!-- 循环箭头 -->
+    <path d="M20,50 L180,50 L180,80 L20,80 L20,50" stroke="black" stroke-width="1.5" fill="none" stroke-dasharray="5,2"/>
+    <path d="M170,50 L180,50 L175,45" stroke="black" stroke-width="1.5" fill="none"/>
+    <path d="M30,80 L20,80 L25,85" stroke="black" stroke-width="1.5" fill="none"/>
+    
+    <!-- 小人画箭头 -->
+    <g transform="translate(220, 60) scale(0.7)">
+      <circle cx="0" cy="-30" r="10" stroke="black" stroke-width="1.5" fill="none"/> <!-- 头 -->
+      <line x1="0" y1="-20" x2="0" y2="10" stroke="black" stroke-width="1.5"/> <!-- 身体 -->
+      <line x1="0" y1="-10" x2="-20" y2="0" stroke="black" stroke-width="1.5"/> <!-- 左手 -->
+      <line x1="0" y1="-10" x2="15" y2="0" stroke="black" stroke-width="1.5"/> <!-- 右手 -->
+      <line x1="0" y1="10" x2="-10" y2="30" stroke="black" stroke-width="1.5"/> <!-- 左腿 -->
+      <line x1="0" y1="10" x2="10" y2="30" stroke="black" stroke-width="1.5"/> <!-- 右腿 -->
+      
+      <!-- 粉笔 -->
+      <line x1="-20" y1="0" x2="-30" y2="-10" stroke="black" stroke-width="1.5"/>
+    </g>
+  </g>
+  
+  <!-- 4. 输出结果：灯泡和笑脸 -->
+  <g transform="translate(600, 400)">
+    <text x="0" y="-20" font-family="Arial" font-size="18" fill="black">输出结果</text>
+    
+    <!-- 灯泡 -->
+    <path d="M0,0 C-20,0 -30,20 -30,40 C-30,60 -20,80 0,80 C20,80 30,60 30,40 C30,20 20,0 0,0 Z" stroke="black" stroke-width="2" fill="none"/>
+    <path d="M-10,80 L-10,100 L10,100 L10,80" stroke="black" stroke-width="2" fill="none"/>
+    
+    <!-- 灯丝 -->
+    <path d="M0,20 C5,30 -5,40 0,50 C5,60 -5,70 0,80" stroke="black" stroke-width="1" fill="none" stroke-dasharray="2,2"/>
+    
+    <!-- 猫图案 -->
+    <g transform="translate(0, 40) scale(0.5)">
+      <circle cx="0" cy="0" r="15" stroke="black" stroke-width="1.5" fill="none"/> <!-- 脸 -->
+      <circle cx="-5" cy="-5" r="2" stroke="black" stroke-width="1" fill="black"/> <!-- 左眼 -->
+      <circle cx="5" cy="-5" r="2" stroke="black" stroke-width="1" fill="black"/> <!-- 右眼 -->
+      <path d="M-5,5 C-3,8 3,8 5,5" stroke="black" stroke-width="1" fill="none"/> <!-- 嘴 -->
+      <path d="M-15,-10 L-5,-15" stroke="black" stroke-width="1" fill="none"/> <!-- 左耳 -->
+      <path d="M15,-10 L5,-15" stroke="black" stroke-width="1" fill="none"/> <!-- 右耳 -->
+      <path d="M-10,0 L-15,-5" stroke="black" stroke-width="1" fill="none"/> <!-- 左胡须1 -->
+      <path d="M-10,2 L-15,2" stroke="black" stroke-width="1" fill="none"/> <!-- 左胡须2 -->
+      <path d="M-10,4 L-15,9" stroke="black" stroke-width="1" fill="none"/> <!-- 左胡须3 -->
+      <path d="M10,0 L15,-5" stroke="black" stroke-width="1" fill="none"/> <!-- 右胡须1 -->
+      <path d="M10,2 L15,2" stroke="black" stroke-width="1" fill="none"/> <!-- 右胡须2 -->
+      <path d="M10,4 L15,9" stroke="black" stroke-width="1" fill="none"/> <!-- 右胡须3 -->
+    </g>
+    
+    <!-- 笑脸 -->
+    <g transform="translate(60, 40)">
+      <circle cx="0" cy="0" r="20" stroke="black" stroke-width="1.5" fill="none"/>
+      <circle cx="-7" cy="-5" r="2" stroke="black" stroke-width="1" fill="black"/> <!-- 左眼 -->
+      <circle cx="7" cy="-5" r="2" stroke="black" stroke-width="1" fill="black"/> <!-- 右眼 -->
+      <path d="M-10,5 C-5,15 5,15 10,5" stroke="black" stroke-width="1.5" fill="none"/> <!-- 笑嘴 -->
+    </g>
+  </g>
+  
+  <!-- 底部文字说明 -->
+  <g transform="translate(400, 550)">
+    <text x="0" y="0" font-family="Arial" font-size="14" text-anchor="middle" fill="black">
+      机器学习的本质不是编写明确的程序，而是通过数据驱动的方式，让机器自我学习和改进。
+    </text>
+  </g>
+  
+  <!-- 箭头标记定义 -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="black" />
+    </marker>
+  </defs>
+</svg>
